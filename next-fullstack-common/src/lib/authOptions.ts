@@ -11,6 +11,10 @@ export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
+    maxAge: Number(process.env.TOKEN_MAX_AGE),
+  },
+  jwt: {
+    maxAge: Number(process.env.TOKEN_MAX_AGE),
   },
   pages: {
     signIn: "/auth/login",
@@ -33,6 +37,7 @@ export const authOptions: AuthOptions = {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
+
       async authorize(credentials, req) {
         if (!credentials?.email || !credentials?.password) {
           return null;
@@ -65,6 +70,8 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
+
   callbacks: {
     async session({ token, session }: { token: any; session: any }) {
       const user = session.user;
